@@ -3,6 +3,8 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const configData = require('./config.json');
 const url = configData.url;
+const outputFilePath = configData.outputFilePath;
+const path = require('path');
 
 let accessCount = 0;
 
@@ -23,10 +25,9 @@ async function accessUrl() {
         if (status === 200 || status === 201) {
             const content = await page.content();
             console.log(content);
-            fs.writeFileSync('output/generated.html', content);
+            fs.writeFileSync(`output/${outputFilePath}`, content);
             console.log('SUCCESS');
             console.log(moment().format('DD-MM-YYYY, h:mm:ss a'));
-            process.exit();
         } else {
             console.log(`retry...`);
             await retry();
@@ -45,6 +46,11 @@ async function retry() {
 async function init() {
     await setup();
     await accessUrl();
+    const browser = await puppeteer.launch({
+        headless: false
+    });
+    page = await browser.newPage();
+    await page.goto(path.resolve(__dirname, `output/${outputFilePath}`));
 }
 
 init();
