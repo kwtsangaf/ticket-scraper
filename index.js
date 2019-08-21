@@ -1,3 +1,4 @@
+const moment = require('moment');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const configData = require('./config.json');
@@ -24,7 +25,7 @@ async function accessUrl() {
             console.log(content);
             fs.writeFileSync('output/generated.html', content);
             console.log('SUCCESS');
-            console.log(new Date());
+            console.log(moment().format('DD-MM-YYYY, h:mm:ss a'));
             process.exit();
         } else {
             console.log(`retry...`);
